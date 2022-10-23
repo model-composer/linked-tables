@@ -1,0 +1,19 @@
+{
+    "name": "model/linked-tables",
+    "description": "Plugin for model/db to allow for linked tables",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Domenico Giambra",
+            "email": "zorinik@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"Model\\LinkedTables\\": "src/"}
+    },
+    "require": {
+        "model/config": "^0.6.1",
+        "model/db": "^0.5.9",
+        "model/providers-finder": "^0.1.4"
+    }
+}
