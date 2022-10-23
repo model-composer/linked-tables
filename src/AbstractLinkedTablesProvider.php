@@ -1,8 +1,8 @@
 <?php namespace Model\LinkedTables;
 
-use Model\DbParser\Table;
+use Model\ProvidersFinder\AbstractProvider;
 
-abstract class AbstractLinkedTablesProvider
+abstract class AbstractLinkedTablesProvider extends AbstractProvider
 {
 	abstract public static function tables(): array;
 }
