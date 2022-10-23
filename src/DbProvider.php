@@ -73,7 +73,7 @@ class DbProvider extends AbstractDbProvider
 					'table' => $customTable . $multilang['table_suffix'],
 					'alias' => ($options['alias'] ?? $table) . '_custom_lang',
 					'on' => [
-						($table . $multilang['table_suffix']) . '.' . $mlTableModel->primary[0] => $mlCustomTableModel->primary[0],
+						($options['alias'] ?? $table) . '_lang' . '.' . $mlTableModel->primary[0] => $mlCustomTableModel->primary[0],
 					],
 					'fields' => $mlFields,
 				];
