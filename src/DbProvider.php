@@ -64,7 +64,7 @@ class DbProvider extends AbstractDbProvider
 
 				$mlFields = [];
 				foreach ($multilang['fields'] as $f) {
-					if (isset($mlTableModel->columns[$f]) and !$mlTableModel->columns[$f]['real'])
+					if (isset($mlCustomTableModel->columns[$f]))
 						$mlFields[] = $f;
 				}
 
