@@ -12,7 +12,6 @@
         "psr-4": {"Model\\LinkedTables\\": "src/"}
     },
     "require": {
-        "model/config": "^0.6.1",
         "model/db": "^0.5.9",
         "model/providers-finder": "^0.2.0"
     }
