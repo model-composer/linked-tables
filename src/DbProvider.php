@@ -7,7 +7,7 @@ use Model\Multilang\Ml;
 
 class DbProvider extends AbstractDbProvider
 {
-	public static function alterSelect(DbConnection $db, string $table, array $where, array $options): array
+	public static function alterSelect(DbConnection $db, string $table, array|int $where, array $options): array
 	{
 		$linkedTables = LinkedTables::getTables($db);
 
