@@ -56,6 +56,7 @@ class DbProvider extends AbstractDbProvider
 					$tableModel->primary[0] => $customTableModel->primary[0],
 				],
 				'fields' => $customFields,
+				'injected' => true,
 			];
 
 			if ($multilang) {
@@ -76,6 +77,7 @@ class DbProvider extends AbstractDbProvider
 						($options['alias'] ?? $table) . '_lang' . '.' . $mlTableModel->primary[0] => $mlCustomTableModel->primary[0],
 					],
 					'fields' => $mlFields,
+					'injected' => true,
 				];
 			}
 		}
