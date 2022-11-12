@@ -23,34 +23,36 @@ class DbProvider extends AbstractDbProvider
 					$customFields[] = $column_name;
 				}
 
-				$mainRow = [];
-				$customRow = [];
-				foreach ($query['data'] as $k => $v) {
-					if (in_array($k, $customFields))
-						$customRow[$k] = $v;
-					else
-						$mainRow[$k] = $v;
-				}
+				foreach ($query['rows'] as $row) {
+					$mainRow = [];
+					$customRow = [];
+					foreach ($row as $k => $v) {
+						if (in_array($k, $customFields))
+							$customRow[$k] = $v;
+						else
+							$mainRow[$k] = $v;
+					}
 
-				$mainRowIdx = count($new);
-				$new[] = [
-					'table' => $query['table'],
-					'data' => $mainRow,
-					'options' => $query['options'],
-				];
+					$mainRowIdx = count($new);
+					$new[] = [
+						'table' => $query['table'],
+						'rows' => [$mainRow],
+						'options' => $query['options'],
+					];
 
-				$new[] = [
-					'table' => $customTable,
-					'data' => $customRow,
-					'options' => array_merge($query['options'], [
-						'replace_ids' => [
-							[
-								'from' => $mainRowIdx,
-								'field' => $customTableModel->primary[0],
+					$new[] = [
+						'table' => $customTable,
+						'rows' => [$customRow],
+						'options' => array_merge($query['options'], [
+							'replace_ids' => [
+								[
+									'from' => $mainRowIdx,
+									'field' => $customTableModel->primary[0],
+								],
 							],
-						],
-					]),
-				];
+						]),
+					];
+				}
 			} else {
 				$new[] = $query;
 			}
