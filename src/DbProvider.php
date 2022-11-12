@@ -58,7 +58,7 @@ class DbProvider extends AbstractDbProvider
 			}
 		}
 
-		return $queries;
+		return $new;
 	}
 
 	public static function alterUpdate(DbConnection $db, array $queries): array
