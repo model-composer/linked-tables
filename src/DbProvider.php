@@ -97,25 +97,36 @@ class DbProvider extends AbstractDbProvider
 			];
 
 			if ($multilang) {
-				$mlTableModel = $db->getParser()->getTable($table . $multilang['table_suffix']);
-				$mlCustomTableModel = $db->getParser()->getTable($customTable . $multilang['table_suffix']);
-
-				$mlFields = [];
-				foreach ($multilang['fields'] as $f) {
-					if (isset($mlCustomTableModel->columns[$f]))
-						$mlFields[] = $f;
+				$joinedMlTableName = ($options['alias'] ?? $table) . '_lang';
+				$isMlJoined = false;
+				foreach ($options['joins'] as $join) {
+					if (($join['alias'] ?? $join['table']) === $joinedMlTableName) {
+						$isMlJoined = true;
+						break;
+					}
 				}
 
-				$options['joins'][] = [
-					'type' => 'LEFT',
-					'table' => $customTable . $multilang['table_suffix'],
-					'alias' => ($options['alias'] ?? $table) . '_custom_lang',
-					'on' => [
-						($options['alias'] ?? $table) . '_lang' . '.' . $mlTableModel->primary[0] => $mlCustomTableModel->primary[0],
-					],
-					'fields' => $mlFields,
-					'injected' => true,
-				];
+				if ($isMlJoined) {
+					$mlTableModel = $db->getParser()->getTable($table . $multilang['table_suffix']);
+					$mlCustomTableModel = $db->getParser()->getTable($customTable . $multilang['table_suffix']);
+
+					$mlFields = [];
+					foreach ($multilang['fields'] as $f) {
+						if (isset($mlCustomTableModel->columns[$f]))
+							$mlFields[] = $f;
+					}
+
+					$options['joins'][] = [
+						'type' => 'LEFT',
+						'table' => $customTable . $multilang['table_suffix'],
+						'alias' => ($options['alias'] ?? $table) . '_custom_lang',
+						'on' => [
+							$joinedMlTableName . '.' . $mlTableModel->primary[0] => $mlCustomTableModel->primary[0],
+						],
+						'fields' => $mlFields,
+						'injected' => true,
+					];
+				}
 			}
 		}
 
