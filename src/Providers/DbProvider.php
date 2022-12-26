@@ -1,8 +1,9 @@
-<?php namespace Model\LinkedTables;
+<?php namespace Model\LinkedTables\Providers;
 
 use Model\Db\AbstractDbProvider;
 use Model\Db\DbConnection;
 use Model\DbParser\Table;
+use Model\LinkedTables\LinkedTables;
 use Model\Multilang\Ml;
 
 class DbProvider extends AbstractDbProvider
