@@ -166,7 +166,7 @@ class DbProvider extends AbstractDbProvider
 		}
 
 		// If the custom table does not exist (eg. for some errors in the config), I can't join
-		if (!$db->getParser()->tableExists($customTable)) {
+		if ($customTable and !$db->getParser()->tableExists($customTable)) {
 			$customTable = null;
 			$multilang = null;
 		}
