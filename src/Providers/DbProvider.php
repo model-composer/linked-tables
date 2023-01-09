@@ -14,7 +14,7 @@ class DbProvider extends AbstractDbProvider
 		foreach ($queries as $query) {
 			[$customTable, $multilang] = self::searchForCustomTable($db, $query['table']);
 
-			if ($customTable) {
+			if ($customTable and ($query['options']['linked_tables'] ?? true)) {
 				$customTableModel = $db->getParser()->getTable($customTable);
 
 				$customFields = [];
@@ -64,8 +64,10 @@ class DbProvider extends AbstractDbProvider
 
 	public static function alterUpdate(DbConnection $db, array $queries): array
 	{
-		foreach ($queries as &$query)
-			[$query['where'], $query['options']] = self::alterSelect($db, $query['table'], $query['where'], $query['options']);
+		foreach ($queries as &$query) {
+			if ($query['options']['linked_tables'] ?? true)
+				[$query['where'], $query['options']] = self::alterSelect($db, $query['table'], $query['where'], $query['options']);
+		}
 
 		return $queries;
 	}
@@ -74,7 +76,7 @@ class DbProvider extends AbstractDbProvider
 	{
 		[$customTable, $multilang] = self::searchForCustomTable($db, $table);
 
-		if ($customTable) {
+		if ($customTable and ($options['linked_tables'] ?? true)) {
 			$tableModel = $db->getParser()->getTable($table);
 			$customTableModel = $db->getParser()->getTable($customTable);
 
