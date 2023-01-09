@@ -113,15 +113,16 @@ class DbProvider extends AbstractDbProvider
 
 				if ($isMlJoined) {
 					$mlTableModel = $db->getParser()->getTable($table . $multilang['table_suffix']);
-					$mlCustomTableModel = $db->getParser()->getTable($customTable . $multilang['table_suffix']);
-
-					$mlFields = [];
-					foreach ($multilang['fields'] as $f) {
-						if (isset($mlCustomTableModel->columns[$f]))
-							$mlFields[] = $f;
-					}
 
 					if ($db->getParser()->tableExists($customTable . $multilang['table_suffix'])) {
+						$mlCustomTableModel = $db->getParser()->getTable($customTable . $multilang['table_suffix']);
+
+						$mlFields = [];
+						foreach ($multilang['fields'] as $f) {
+							if (isset($mlCustomTableModel->columns[$f]))
+								$mlFields[] = $f;
+						}
+
 						$options['joins'][] = [
 							'type' => 'LEFT',
 							'table' => $customTable . $multilang['table_suffix'],
