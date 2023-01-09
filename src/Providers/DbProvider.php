@@ -165,13 +165,19 @@ class DbProvider extends AbstractDbProvider
 			}
 		}
 
+		// If the custom table does not exist (eg. for some errors in the config), I can't join
+		if (!$db->getParser()->tableExists($customTable)) {
+			$customTable = null;
+			$multilang = null;
+		}
+
 		return [$customTable, $multilang];
 	}
 
 	public static function alterTableModel(DbConnection $db, string $table, Table $tableModel): Table
 	{
 		$linkedTables = LinkedTables::getTables($db);
-		if (array_key_exists($table, $linkedTables)) {
+		if (array_key_exists($table, $linkedTables) and $db->getParser()->tableExists($linkedTables[$table])) {
 			$customTableModel = $db->getParser()->getTable($linkedTables[$table]);
 			$tableModel->loadColumns($customTableModel->columns, false);
 		}
