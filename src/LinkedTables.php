@@ -26,7 +26,7 @@ class LinkedTables
 		$tables = [];
 		$providers = Providers::find('LinkedTablesProvider');
 		foreach ($providers as $provider) {
-			$providerTables = $provider['provider']::tables()[$db->getName()] ?? [];
+			$providerTables = $provider['provider']::tables($db);
 			foreach ($providerTables as $k => $v)
 				$tables[is_numeric($k) ? $v : $k] = is_numeric($k) ? $v . '_custom' : $v;
 		}
