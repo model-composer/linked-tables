@@ -121,16 +121,18 @@ class DbProvider extends AbstractDbProvider
 							$mlFields[] = $f;
 					}
 
-					$options['joins'][] = [
-						'type' => 'LEFT',
-						'table' => $customTable . $multilang['table_suffix'],
-						'alias' => ($options['alias'] ?? $table) . '_custom_lang',
-						'on' => [
-							$joinedMlTableName . '.' . $mlTableModel->primary[0] => $mlCustomTableModel->primary[0],
-						],
-						'fields' => $mlFields,
-						'injected' => true,
-					];
+					if ($db->getParser()->tableExists($customTable . $multilang['table_suffix'])) {
+						$options['joins'][] = [
+							'type' => 'LEFT',
+							'table' => $customTable . $multilang['table_suffix'],
+							'alias' => ($options['alias'] ?? $table) . '_custom_lang',
+							'on' => [
+								$joinedMlTableName . '.' . $mlTableModel->primary[0] => $mlCustomTableModel->primary[0],
+							],
+							'fields' => $mlFields,
+							'injected' => true,
+						];
+					}
 				}
 			}
 		}
