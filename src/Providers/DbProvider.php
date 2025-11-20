@@ -103,15 +103,15 @@ class DbProvider extends AbstractDbProvider
 
 			if ($multilang) {
 				$joinedMlTableName = ($options['alias'] ?? $table) . '_lang';
-				$isMlJoined = false;
-				foreach ($options['joins'] as $join) {
+				$joined_ml = null;
+				foreach ($options['joins'] as $join_idx => $join) {
 					if (($join['alias'] ?? $join['table']) === $joinedMlTableName) {
-						$isMlJoined = true;
+						$joined_ml = $join_idx;
 						break;
 					}
 				}
 
-				if ($isMlJoined) {
+				if ($joined_ml !== null) {
 					$mlTableModel = $db->getParser()->getTable($table . $multilang['table_suffix']);
 
 					if ($db->getParser()->tableExists($customTable . $multilang['table_suffix'])) {
@@ -119,8 +119,19 @@ class DbProvider extends AbstractDbProvider
 
 						$mlFields = [];
 						foreach ($multilang['fields'] as $f) {
-							if (isset($mlCustomTableModel->columns[$f]))
+							if (isset($mlCustomTableModel->columns[$f])) {
 								$mlFields[] = $f;
+
+								if (!empty($options['joins'][$joined_ml]['fields'])) {
+									// Remove field from the original ml join (look for both formats)
+									if (isset($options['joins'][$joined_ml]['fields'][$f])) {
+										unset($options['joins'][$joined_ml]['fields'][$f]);
+									} elseif (in_array($f, $options['joins'][$joined_ml]['fields'])) {
+										$key = array_search($f, $options['joins'][$joined_ml]['fields']);
+										unset($options['joins'][$joined_ml]['fields'][$key]);
+									}
+								}
+							}
 						}
 
 						$options['joins'][] = [
