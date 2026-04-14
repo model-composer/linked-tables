@@ -118,18 +118,19 @@ class DbProvider extends AbstractDbProvider
 						$mlCustomTableModel = $db->getParser()->getTable($customTable . $multilang['table_suffix']);
 
 						$mlFields = [];
-						foreach ($multilang['fields'] as $f) {
-							if (isset($mlCustomTableModel->columns[$f])) {
-								$mlFields[] = $f;
+						foreach ($mlCustomTableModel->columns as $f => $col) {
+							if ($col['key'] === 'PRI')
+								continue;
 
-								if (!empty($options['joins'][$joined_ml]['fields'])) {
-									// Remove field from the original ml join (look for both formats)
-									if (isset($options['joins'][$joined_ml]['fields'][$f])) {
-										unset($options['joins'][$joined_ml]['fields'][$f]);
-									} elseif (in_array($f, $options['joins'][$joined_ml]['fields'])) {
-										$key = array_search($f, $options['joins'][$joined_ml]['fields']);
-										unset($options['joins'][$joined_ml]['fields'][$key]);
-									}
+							$mlFields[] = $f;
+
+							if (!empty($options['joins'][$joined_ml]['fields'])) {
+								// Remove field from the original ml join (look for both formats)
+								if (isset($options['joins'][$joined_ml]['fields'][$f])) {
+									unset($options['joins'][$joined_ml]['fields'][$f]);
+								} elseif (in_array($f, $options['joins'][$joined_ml]['fields'])) {
+									$key = array_search($f, $options['joins'][$joined_ml]['fields']);
+									unset($options['joins'][$joined_ml]['fields'][$key]);
 								}
 							}
 						}
@@ -194,6 +195,14 @@ class DbProvider extends AbstractDbProvider
 		if (array_key_exists($table, $linkedTables) and $db->getParser()->tableExists($linkedTables[$table])) {
 			$customTableModel = $db->getParser()->getTable($linkedTables[$table]);
 			$tableModel->loadColumns($customTableModel->columns, false);
+
+			if (class_exists('\\Model\\Multilang\\Ml')) {
+				$mlTables = Ml::getTables($db);
+				if (isset($mlTables[$table])) {
+					$customTableModel = $db->getParser()->getTable($linkedTables[$table] . $mlTables[$table]['table_suffix']);
+					$tableModel->loadColumns($customTableModel->columns, false);
+				}
+			}
 		}
 
 		return $tableModel;
